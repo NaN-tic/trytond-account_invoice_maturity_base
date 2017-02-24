@@ -15,8 +15,8 @@ class PaymentTermLine:
     @classmethod
     def __setup__(cls):
         super(PaymentTermLine, cls).__setup__()
-        cls.percentage.states['required'] |= Eval('type') == 'percent_on_untaxed_amount'
-        cls.percentage.states['invisible'] &= Eval('type') != 'percent_on_untaxed_amount'
+        cls.ratio.states['required'] |= Eval('type') == 'percent_on_untaxed_amount'
+        cls.ratio.states['invisible'] &= Eval('type') != 'percent_on_untaxed_amount'
         cls.divisor.states['required'] |= Eval('type') == 'percent_on_untaxed_amount'
         cls.divisor.states['invisible'] &= Eval('type') != 'percent_on_untaxed_amount'
         item = ('percent_on_untaxed_amount', 'Percentage on Untaxed Amount')
@@ -28,7 +28,7 @@ class PaymentTermLine:
             remainder, amount, currency)
         if self.type == 'percent_on_untaxed_amount':
             untaxed_amount = Transaction().context.get('untaxed_amount', Decimal('0.0'))
-            return currency.round(untaxed_amount * self.percentage / Decimal('100'))
+            return currency.round(untaxed_amount * self.ratio)
         return value
 
 
