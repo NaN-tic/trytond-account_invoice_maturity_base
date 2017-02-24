@@ -1,0 +1,7 @@
+#
+msgid ""
+msgstr "Content-Type: text/plain; charset=utf-8\n"
+
+msgctxt "selection:account.invoice.payment_term.line,type:"
+msgid "Percentage on Untaxed Amount"
+msgstr "Percentatge en la base imposable"
