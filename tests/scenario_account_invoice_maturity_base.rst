@@ -175,7 +175,7 @@ Create payment term::
     >>> payment_term.lines.append(payment_term_line)
     >>> payment_term.save()
 
-Create invoice::
+Create customer invoice::
 
     >>> Invoice = Model.get('account.invoice')
     >>> InvoiceLine = Model.get('account.invoice.line')
@@ -192,11 +192,35 @@ Create invoice::
     >>> invoice.state
     u'posted'
     >>> line1, line2, line3, line4 = invoice.move.lines
-    >>> line1.credit, line1.debit
-    (Decimal('0.0'), Decimal('230.00'))
-    >>> line2.credit, line2.debit
+    >>> line1.debit, line1.credit
+    (Decimal('210.00'), Decimal('0.0'))
+    >>> line2.debit, line2.credit
     (Decimal('10.00'), Decimal('0.0'))
-    >>> line3.credit, line3.debit
-    (Decimal('20.00'), Decimal('0.0'))
-    >>> line4.credit, line4.debit
-    (Decimal('200.00'), Decimal('0.0'))
+    >>> line3.debit, line3.credit
+    (Decimal('0.0'), Decimal('20.00'))
+    >>> line4.debit, line4.credit
+    (Decimal('0.0'), Decimal('200.00'))
+
+Create supplier invoice::
+
+    >>> invoice = Invoice()
+    >>> invoice.type = 'in_invoice'
+    >>> invoice.invoice_date = today
+    >>> invoice.party = party
+    >>> invoice.payment_term = payment_term
+    >>> line = InvoiceLine()
+    >>> invoice.lines.append(line)
+    >>> line.product = product
+    >>> line.quantity = 5
+    >>> invoice.save()
+    >>> Invoice.post([invoice.id], config.context)
+    >>> invoice.reload()
+    >>> invoice.state
+    u'posted'
+    >>> line1, line2, line3 = invoice.move.lines
+    >>> line1.debit, line1.credit
+    (Decimal('0.0'), Decimal('118.75'))
+    >>> line2.debit, line2.credit
+    (Decimal('0.0'), Decimal('6.25'))
+    >>> line3.debit, line3.credit
+    (Decimal('125.00'), Decimal('0.0'))
