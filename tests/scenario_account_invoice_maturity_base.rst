@@ -7,7 +7,8 @@ Imports::
     >>> from dateutil.relativedelta import relativedelta
     >>> from decimal import Decimal
     >>> from operator import attrgetter
-    >>> from proteus import config, Model, Wizard
+    >>> from proteus import Model, Wizard
+    >>> from trytond.tests.tools import activate_modules
     >>> from trytond.modules.company.tests.tools import create_company, \
     ...     get_company
     >>> from trytond.modules.account.tests.tools import create_fiscalyear, \
@@ -16,18 +17,9 @@ Imports::
     ...     set_fiscalyear_invoice_sequences
     >>> today = datetime.date.today()
 
-Create database::
-
-    >>> config = config.set_trytond()
-    >>> config.pool.test = True
-
 Install account_invoice::
 
-    >>> Module = Model.get('ir.module')
-    >>> account_invoice_module, = Module.find(
-    ...     [('name', '=', 'account_invoice_maturity_base')])
-    >>> account_invoice_module.click('install')
-    >>> Wizard('ir.module.install_upgrade').execute('upgrade')
+    >>> config = activate_modules('account_invoice_maturity_base')
 
 Create company::
 
@@ -114,8 +106,7 @@ Create payment term::
     >>> delta = line.relativedeltas.new(days=40)
     >>> payment_term.save()
 
-
-Create invoice::
+Create customer invoice::
 
     >>> Invoice = Model.get('account.invoice')
     >>> InvoiceLine = Model.get('account.invoice.line')
@@ -129,17 +120,71 @@ Create invoice::
     >>> line.unit_price = Decimal('40')
     >>> invoice.save()
 
-Post invoice::
+Post customer invoice::
 
     >>> invoice.click('post')
     >>> invoice.state
     u'posted'
     >>> line1, line2, line3, line4 = invoice.move.lines
-    >>> line1.credit, line1.debit
-    (Decimal('0'), Decimal('230.00'))
-    >>> line2.credit, line2.debit
+    >>> line1.debit, line1.credit
+    (Decimal('210.00'), Decimal('0'))
+    >>> line2.debit, line2.credit
     (Decimal('10.00'), Decimal('0'))
-    >>> line3.credit, line3.debit
+    >>> line3.debit, line3.credit
+    (Decimal('0'), Decimal('20.00'))
+    >>> line4.debit, line4.credit
+    (Decimal('0'), Decimal('200.00'))
+
+Create supplier invoice::
+
+    >>> invoice = Invoice()
+    >>> invoice.type = 'in'
+    >>> invoice.invoice_date = today
+    >>> invoice.party = party
+    >>> invoice.payment_term = payment_term
+    >>> line = InvoiceLine()
+    >>> invoice.lines.append(line)
+    >>> line.product = product
+    >>> line.quantity = 5
+    >>> line.unit_price = Decimal('25')
+    >>> invoice.save()
+
+Post supplier invoice::
+
+    >>> invoice.click('post')
+    >>> invoice.state
+    u'posted'
+    >>> line1, line2, line3 = invoice.move.lines
+    >>> line1.debit, line1.credit
+    (Decimal('0'), Decimal('118.75'))
+    >>> line2.debit, line2.credit
+    (Decimal('0'), Decimal('6.25'))
+    >>> line3.debit, line3.credit
+    (Decimal('125.00'), Decimal('0'))
+
+Create customer credit note invoice::
+
+    >>> invoice = Invoice()
+    >>> invoice.party = party
+    >>> invoice.payment_term = payment_term
+    >>> line = InvoiceLine()
+    >>> invoice.lines.append(line)
+    >>> line.product = product
+    >>> line.quantity = -5
+    >>> line.unit_price = Decimal('40')
+    >>> invoice.save()
+
+Post customer credit invoice::
+
+    >>> invoice.click('post')
+    >>> invoice.state
+    u'posted'
+    >>> line1, line2, line3, line4 = invoice.move.lines
+    >>> line1.debit, line1.credit
+    (Decimal('0'), Decimal('210.00'))
+    >>> line2.debit, line2.credit
+    (Decimal('0'), Decimal('10.00'))
+    >>> line3.debit, line3.credit
     (Decimal('20.00'), Decimal('0'))
-    >>> line4.credit, line4.debit
+    >>> line4.debit, line4.credit
     (Decimal('200.00'), Decimal('0'))

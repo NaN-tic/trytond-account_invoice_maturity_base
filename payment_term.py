@@ -28,7 +28,11 @@ class PaymentTermLine:
             remainder, amount, currency)
         if self.type == 'percent_on_untaxed_amount':
             untaxed_amount = Transaction().context.get('untaxed_amount', Decimal('0.0'))
-            return currency.round(untaxed_amount * self.ratio)
+            invoice_type = Transaction().context.get('invoice_type', 'out')
+            pouamount = currency.round(untaxed_amount * self.ratio)
+            if invoice_type == 'out':
+                return pouamount * -1
+            return pouamount
         return value
 
 
@@ -37,5 +41,6 @@ class Invoice:
     __name__ = 'account.invoice'
 
     def get_move(self):
-        with Transaction().set_context(untaxed_amount=self.untaxed_amount):
+        with Transaction().set_context(untaxed_amount=self.untaxed_amount,
+                invoice_type=self.type):
             return super(Invoice, self).get_move()
