@@ -8,8 +8,7 @@ from decimal import Decimal
 __all__ = ['PaymentTermLine', 'Invoice']
 
 
-class PaymentTermLine:
-    __metaclass__ = PoolMeta
+class PaymentTermLine(metaclass=PoolMeta):
     __name__ = 'account.invoice.payment_term.line'
 
     @classmethod
@@ -36,8 +35,7 @@ class PaymentTermLine:
         return value
 
 
-class Invoice:
-    __metaclass__ = PoolMeta
+class Invoice(metaclass=PoolMeta):
     __name__ = 'account.invoice'
 
     def get_move(self):

@@ -127,7 +127,7 @@ Post customer invoice::
 
     >>> invoice.click('post')
     >>> invoice.state
-    u'posted'
+    'posted'
     >>> line1, line2, line3, line4 = invoice.move.lines
     >>> line1.debit, line1.credit
     (Decimal('210.00'), Decimal('0'))
@@ -156,7 +156,7 @@ Post supplier invoice::
 
     >>> invoice.click('post')
     >>> invoice.state
-    u'posted'
+    'posted'
     >>> line1, line2, line3 = invoice.move.lines
     >>> line1.debit, line1.credit
     (Decimal('0'), Decimal('118.75'))
@@ -181,7 +181,7 @@ Post customer credit invoice::
 
     >>> invoice.click('post')
     >>> invoice.state
-    u'posted'
+    'posted'
     >>> line1, line2, line3, line4 = invoice.move.lines
     >>> line1.debit, line1.credit
     (Decimal('0'), Decimal('210.00'))
