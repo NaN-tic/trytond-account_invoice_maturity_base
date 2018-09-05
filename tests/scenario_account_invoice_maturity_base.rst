@@ -52,18 +52,6 @@ Set Cash journal::
 
     >>> Journal = Model.get('account.journal')
     >>> journal_cash, = Journal.find([('type', '=', 'cash')])
-    >>> journal_cash.credit_account = account_cash
-    >>> journal_cash.debit_account = account_cash
-    >>> journal_cash.save()
-
-Create Write-Off journal::
-
-    >>> Sequence = Model.get('ir.sequence')
-    >>> sequence_journal, = Sequence.find([('code', '=', 'account.journal')])
-    >>> journal_writeoff = Journal(name='Write-Off', type='write-off',
-    ...     sequence=sequence_journal,
-    ...     credit_account=revenue, debit_account=expense)
-    >>> journal_writeoff.save()
 
 Create party::
 
