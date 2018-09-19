@@ -116,6 +116,7 @@ Post customer invoice::
     >>> invoice.click('post')
     >>> invoice.state
     'posted'
+    >>> invoice.reload()
     >>> line1, line2, line3, line4 = invoice.move.lines
     >>> line1.debit, line1.credit
     (Decimal('210.00'), Decimal('0'))
