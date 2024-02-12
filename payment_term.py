@@ -5,8 +5,6 @@ from trytond.pyson import Eval
 from trytond.transaction import Transaction
 from decimal import Decimal
 
-__all__ = ['PaymentTermLine', 'Invoice']
-
 
 class PaymentTermLine(metaclass=PoolMeta):
     __name__ = 'account.invoice.payment_term.line'
@@ -27,10 +25,7 @@ class PaymentTermLine(metaclass=PoolMeta):
             remainder, amount, currency)
         if self.type == 'percent_on_untaxed_amount':
             untaxed_amount = Transaction().context.get('untaxed_amount', Decimal('0.0'))
-            invoice_type = Transaction().context.get('invoice_type', 'out')
             pouamount = currency.round(untaxed_amount * self.ratio)
-            if invoice_type == 'out':
-                return pouamount * -1
             return pouamount
         return value
 
