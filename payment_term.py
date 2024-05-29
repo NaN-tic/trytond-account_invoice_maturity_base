@@ -24,7 +24,7 @@ class PaymentTermLine(metaclass=PoolMeta):
         value = super(PaymentTermLine, self).get_value(
             remainder, amount, currency)
         if self.type == 'percent_on_untaxed_amount':
-            untaxed_amount = Transaction().context.get('untaxed_amount', Decimal('0.0'))
+            untaxed_amount = Transaction().context.get('untaxed_amount', Decimal(0))
             pouamount = currency.round(untaxed_amount * self.ratio)
             return pouamount
         return value
