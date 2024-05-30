@@ -117,15 +117,15 @@ Post customer invoice::
     >>> invoice.state
     'posted'
     >>> invoice.reload()
-    >>> line1, line2, line3, line4 = invoice.move.lines
+    >>> line1, line2, line3, line4 = sorted(invoice.move.lines, key=lambda x: (x.debit, x.credit))
     >>> line1.debit, line1.credit
-    (Decimal('210.00'), Decimal('0'))
-    >>> line2.debit, line2.credit
-    (Decimal('10.00'), Decimal('0'))
-    >>> line3.debit, line3.credit
     (Decimal('0'), Decimal('20.00'))
-    >>> line4.debit, line4.credit
+    >>> line2.debit, line2.credit
     (Decimal('0'), Decimal('200.00'))
+    >>> line3.debit, line3.credit
+    (Decimal('10.00'), Decimal('0'))
+    >>> line4.debit, line4.credit
+    (Decimal('210.00'), Decimal('0'))
 
 Create supplier invoice::
 
@@ -146,11 +146,11 @@ Post supplier invoice::
     >>> invoice.click('post')
     >>> invoice.state
     'posted'
-    >>> line1, line2, line3 = invoice.move.lines
+    >>> line1, line2, line3 = sorted(invoice.move.lines, key=lambda x: (x.debit, x.credit))
     >>> line1.debit, line1.credit
-    (Decimal('0'), Decimal('118.75'))
-    >>> line2.debit, line2.credit
     (Decimal('0'), Decimal('6.25'))
+    >>> line2.debit, line2.credit
+    (Decimal('0'), Decimal('118.75'))
     >>> line3.debit, line3.credit
     (Decimal('125.00'), Decimal('0'))
 
@@ -171,11 +171,11 @@ Post customer credit invoice::
     >>> invoice.click('post')
     >>> invoice.state
     'posted'
-    >>> line1, line2, line3, line4 = invoice.move.lines
+    >>> line1, line2, line3, line4 = sorted(invoice.move.lines, key=lambda x: (x.debit, x.credit))
     >>> line1.debit, line1.credit
-    (Decimal('0'), Decimal('210.00'))
-    >>> line2.debit, line2.credit
     (Decimal('0'), Decimal('10.00'))
+    >>> line2.debit, line2.credit
+    (Decimal('0'), Decimal('210.00'))
     >>> line3.debit, line3.credit
     (Decimal('20.00'), Decimal('0'))
     >>> line4.debit, line4.credit

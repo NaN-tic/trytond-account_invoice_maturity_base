@@ -21,8 +21,7 @@ class PaymentTermLine(metaclass=PoolMeta):
             cls.type.selection.append(item)
 
     def get_value(self, remainder, amount, currency):
-        value = super(PaymentTermLine, self).get_value(
-            remainder, amount, currency)
+        value = super().get_value(remainder, amount, currency)
         if self.type == 'percent_on_untaxed_amount':
             untaxed_amount = Transaction().context.get('untaxed_amount', Decimal(0))
             pouamount = currency.round(untaxed_amount * self.ratio)
@@ -36,4 +35,4 @@ class Invoice(metaclass=PoolMeta):
     def get_move(self):
         with Transaction().set_context(untaxed_amount=self.untaxed_amount,
                 invoice_type=self.type):
-            return super(Invoice, self).get_move()
+            return super().get_move()
