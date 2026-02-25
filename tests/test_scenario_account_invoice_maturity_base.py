@@ -96,7 +96,7 @@ class Test(unittest.TestCase):
         # Create customer invoice
         Invoice = Model.get('account.invoice')
         InvoiceLine = Model.get('account.invoice.line')
-        invoice = Invoice()
+        invoice = Invoice(type='out')
         invoice.party = party
         invoice.payment_term = payment_term
         line = InvoiceLine()
@@ -126,7 +126,7 @@ class Test(unittest.TestCase):
         self.assertEqual(line4.credit, Decimal('0'))
 
         # Create supplier invoice
-        invoice = Invoice()
+        invoice = Invoice(type='out')
         invoice.type = 'in'
         invoice.invoice_date = today
         invoice.party = party
