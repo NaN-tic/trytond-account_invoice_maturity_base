@@ -154,7 +154,7 @@ class Test(unittest.TestCase):
         self.assertEqual(line3.credit, Decimal('0'))
 
         # Create customer credit note invoice
-        invoice = Invoice()
+        invoice = Invoice(type='out')
         invoice.party = party
         invoice.payment_term = payment_term
         line = InvoiceLine()
